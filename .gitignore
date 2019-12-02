@@ -2,3 +2,4 @@
 /out
 /src/.vscode
 /src/com/codechallenges.iml
+/src/**/*.iml
