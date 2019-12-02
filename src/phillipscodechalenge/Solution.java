@@ -49,6 +49,7 @@ class Result {
         String s = r.toString();
         return s;
     }
+
 // ====================================================================================
     public static String largestSegmentTopDownDP(List<Integer> radius, int segments) {
         int n = radius.size();
@@ -102,6 +103,7 @@ class Result {
 
         return result[row][col];
     }
+
 // ======================================================================================
     public static String largestSegmentBruteForce(List<Integer> radius, int segments) {
         int n = radius.size();
