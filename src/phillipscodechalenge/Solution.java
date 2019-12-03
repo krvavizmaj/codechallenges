@@ -5,6 +5,7 @@
 import java.io.*;
 import java.math.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 class Result {
     static double pi = 3.14159265359;
@@ -140,6 +141,31 @@ class Result {
             }
         }
     };
+
+// =====================================================================================================================
+    public static String largestSegmentStraightforward(List<Integer> radius, int segments) {
+        int n = radius.size();
+        Collections.sort(radius);
+        Collections.reverse(radius);
+        List<Double> area = radius.stream().map(x -> x * x * pi).collect(Collectors.toList());
+
+        int[] dist = new int[radius.size()];
+        dist[0] = segments;
+
+        double max = area.get(0) / segments;
+        boolean running = true;
+        int current = 0;
+        while (running) {
+            while (area.get(current) / dist[0] )
+
+            running = false;
+        }
+
+        BigDecimal r = new BigDecimal(Double.toString(0));
+        r = r.setScale(4, RoundingMode.HALF_EVEN);
+        String s = r.toString();
+        return s;
+    }
 
 }
 
