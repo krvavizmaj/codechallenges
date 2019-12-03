@@ -12,6 +12,44 @@ class Result {
     static List<Integer> r;
     static int executions = 0;
 
+// Solution 1 (brute force) ============================================================================================
+    public static String largestSegmentBruteForce(List<Integer> radius, int segments) {
+        int n = radius.size();
+        Collections.sort(radius);
+        Collections.reverse(radius);
+
+        List<Double> max = new ArrayList<>();
+        max.add(0.0);
+        int[] dist = new int[radius.size()];
+        Result.largestSegmentBF(radius, max, dist, 0, segments);
+
+        BigDecimal r = new BigDecimal(Double.toString(max.get(0)));
+        r = r.setScale(4, RoundingMode.HALF_EVEN);
+        String s = r.toString();
+        return s;
+    }
+
+    public static void largestSegmentBF(List<Integer> radius, List<Double> max, int[] dist, int index, int segments) {
+        if (index >= dist.length) {
+            if (segments == 0) {
+                double m = (double)radius.get(0) * (double)radius.get(0) * pi;
+                for (int i = 0; i < dist.length; i++) {
+                    if (dist[i] > 0) {
+                        m = Math.min(m, (double)radius.get(i) * (double)radius.get(i) * pi / (double)dist[i]);
+                    }
+                }
+                max.set(0, Math.max(m, max.get(0)));
+            }
+        } else {
+            for (int i = segments; i >= 0; i--) {
+                int[] distCopy = Arrays.copyOf(dist, dist.length);
+                distCopy[index] = i;
+                largestSegmentBF(radius, max, distCopy, index + 1, segments - i);
+            }
+        }
+    };
+
+// Solution 2 (bottom up dynamic programing) ===========================================================================
     public static String largestSegmentBottomUpDP(List<Integer> radius, int segments) {
         int n = radius.size();
         Collections.sort(radius);
@@ -36,13 +74,7 @@ class Result {
                 }
             }
         }
-
-//        for (int i = 0; i < n; i++) {
-//            for (int j = 0; j < segments; j++) {
-//                System.out.print(result[i][j] + "\t");
-//            }
-//            System.out.println();
-//        }
+//        printResultMatrix();
 
         BigDecimal r = new BigDecimal(Double.toString(result[n-1][segments-1]));
         r = r.setScale(4, RoundingMode.HALF_EVEN);
@@ -50,7 +82,7 @@ class Result {
         return s;
     }
 
-// ====================================================================================
+// Solution 3 (top down dynamic programming) ===========================================================================
     public static String largestSegmentTopDownDP(List<Integer> radius, int segments) {
         int n = radius.size();
         Collections.sort(radius);
@@ -60,12 +92,7 @@ class Result {
 
         double value = getResult(n - 1, segments - 1);
         System.out.println("executions: " + executions);
-//        for (int i = 0; i < n; i++) {
-//            for (int j = 0; j < segments; j++) {
-//                System.out.print(result[i][j] + "\t");
-//            }
-//            System.out.println();
-//        }
+//        printResultMatrix();
 
         BigDecimal r = new BigDecimal(value);
         r = r.setScale(4, RoundingMode.HALF_EVEN);
@@ -104,64 +131,42 @@ class Result {
         return result[row][col];
     }
 
-// ======================================================================================
-    public static String largestSegmentBruteForce(List<Integer> radius, int segments) {
-        int n = radius.size();
-        Collections.sort(radius);
-        Collections.reverse(radius);
-
-        List<Double> max = new ArrayList<>();
-        max.add(0.0);
-        int[] dist = new int[radius.size()];
-        Result.largestSegmentBF(radius, max, dist, 0, segments);
-
-        BigDecimal r = new BigDecimal(Double.toString(max.get(0)));
-        r = r.setScale(4, RoundingMode.HALF_EVEN);
-        String s = r.toString();
-        return s;
-    }
-
-    public static void largestSegmentBF(List<Integer> radius, List<Double> max, int[] dist, int index, int segments) {
-        if (index >= dist.length) {
-            if (segments == 0) {
-                double m = (double)radius.get(0) * (double)radius.get(0) * pi;
-                for (int i = 0; i < dist.length; i++) {
-                    if (dist[i] > 0) {
-                        m = Math.min(m, (double)radius.get(i) * (double)radius.get(i) * pi / (double)dist[i]);
-                    }
-                }
-                max.set(0, Math.max(m, max.get(0)));
+    private static void printResultMatrix() {
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[0].length; j++) {
+                System.out.print(result[i][j] + "\t");
             }
-        } else {
-            for (int i = segments; i >= 0; i--) {
-                int[] distCopy = Arrays.copyOf(dist, dist.length);
-                distCopy[index] = i;
-                largestSegmentBF(radius, max, distCopy, index + 1, segments - i);
-            }
+            System.out.println();
         }
-    };
+    }
 
 }
 
 public class Solution {
     public static void main(String[] args) throws IOException {
 
-        Integer[] radius = new Integer[] {2, 2, 3, 3, 4, 5, 5, 6, 7, 8}; int segments = 8;
+//        Integer[] radius = new Integer[] {2, 2, 3, 3, 4, 5, 5, 6, 7, 8, 9, 9, 10, 12, 14, 15}; int segments = 2;
+//        Integer[] radius = new Integer[] {2, 2, 3, 3, 4, 5, 5, 6, 7, 8}; int segments = 8;
 //        Integer[] radius = new Integer[] {2, 2, 3, 3, 4, 5, 5}; int segments = 7;
 //        Integer[] radius = new Integer[] {2, 3, 3, 4, 4, 5}; int segments = 6;
 //        Integer[] radius = new Integer[] {1, 1, 1, 2, 2, 3}; int segments = 6;
 //        Integer[] radius = new Integer[] {1, 1, 1, 2}; int segments = 3;
 //        Integer[] radius = new Integer[] {1, 1, 1, 2, 2}; int segments = 4;
 //        Integer[] radius = new Integer[] {3, 3, 4}; int segments = 3;
-//        Integer[] radius = new Integer[20000];
-//        for (int i = 0; i < 20000; i++) radius[i] = (int)(Math.random() * 10000.0);
-//        int segments = 20000;
+//        Integer[] radius = new Integer[] {2, 7}; int segments = 16;
 
-//        String result1 = Result.largestSegmentBruteForce(Arrays.asList(radius), segments);
-//        System.out.println(result1);
-//        String result1 = Result.largestSegmentBottomUpDP(Arrays.asList(radius), segments);
-//        System.out.println(result1);
-        String result2 = Result.largestSegmentTopDownDP(Arrays.asList(radius), segments);
-        System.out.println(result2);
+        int numberOfCircles = 100000;
+        int segments = 100000;
+        Integer[] radius = new Integer[numberOfCircles];
+        for (int i = 0; i < numberOfCircles; i++) radius[i] = (int)(Math.random() * 10000.0);
+
+        long startTime = System.currentTimeMillis();
+
+//        String result1 = Result.largestSegmentBruteForce(Arrays.asList(radius), segments); System.out.println(result1);
+        String result1 = Result.largestSegmentBottomUpDP(Arrays.asList(radius), segments); System.out.println(result1);
+//        String result2 = Result.largestSegmentTopDownDP(Arrays.asList(radius), segments); System.out.println(result2);
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("execution time: " + (endTime - startTime));
     }
 }
